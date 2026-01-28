@@ -4,17 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Service Feedback</title>
-    <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
+        
         :root {
-            --bg-primary: #0a0e27;
-            --bg-secondary: #151934;
-            --accent-happy: #ffd93d;
-            --accent-sad: #6bcfff;
-            --accent-angry: #ff6b9d;
-            --text-primary: #ffffff;
-            --text-secondary: #a8b2d1;
-            --success: #4ade80;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --accent-happy: #10b981;
+            --accent-sad: #3b82f6;
+            --accent-angry: #ef4444;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --success: #10b981;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 25px -5px rgb(0 0 0 / 0.1);
         }
 
         * {
@@ -24,42 +29,89 @@
         }
 
         body {
-            font-family: 'Spline Sans', sans-serif;
-            background: var(--bg-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 15s ease infinite;
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            overflow-x: hidden;
+            line-height: 1.6;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(100px);
+            -webkit-backdrop-filter: blur(100px);
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            right: -50%;
+            bottom: -50%;
+            background: radial-gradient(circle at 30% 50%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(239, 68, 68, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 80%, rgba(16, 185, 129, 0.15) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
         }
 
         .container {
-            max-width: 600px;
+            max-width: 560px;
             width: 100%;
+            animation: fadeInUp 0.6s ease-out;
             position: relative;
+            z-index: 1;
         }
 
-        .card {
-            background: var(--bg-secondary);
-            border-radius: 32px;
-            padding: 60px 50px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
-            position: relative;
-            overflow: hidden;
-            animation: slideUp 0.6s ease-out;
-        }
-
-        @keyframes slideUp {
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(20px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 48px 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
         }
 
         .card::before {
@@ -69,108 +121,85 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, var(--accent-happy), var(--accent-sad), var(--accent-angry));
+            background: linear-gradient(90deg, 
+                #fbbf24 0%,
+                #f59e0b 12.5%,
+                #ef4444 25%,
+                #ec4899 37.5%,
+                #a855f7 50%,
+                #6366f1 62.5%,
+                #3b82f6 75%,
+                #06b6d4 87.5%,
+                #10b981 100%
+            );
+            border-radius: 24px 24px 0 0;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
 
         h1 {
-            font-family: 'DM Serif Display', serif;
-            font-size: 2.5rem;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #ffffff 0%, #a8b2d1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: fadeIn 0.8s ease-out 0.2s both;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            font-family: 'Google Sans', 'Product Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 700;
+            letter-spacing: -0.02em;
         }
 
         .subtitle {
             color: var(--text-secondary);
-            font-size: 1.1rem;
-            animation: fadeIn 0.8s ease-out 0.4s both;
+            font-size: 0.95rem;
+            font-weight: 400;
         }
 
         .mood-section {
-            animation: fadeIn 0.8s ease-out 0.6s both;
+            margin-bottom: 32px;
         }
 
         .mood-label {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
+            font-size: 0.875rem;
             font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
             text-align: center;
+            letter-spacing: -0.01em;
         }
 
         .mood-buttons {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 40px;
+            gap: 12px;
         }
 
         .mood-button {
-            background: rgba(255, 255, 255, 0.03);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 30px 20px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 28px 16px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             position: relative;
-            overflow: hidden;
-        }
-
-        .mood-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: currentColor;
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
 
         .mood-button:hover {
-            transform: translateY(-4px);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
             border-color: currentColor;
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
-        }
-
-        .mood-button:hover::before {
-            opacity: 0.1;
         }
 
         .mood-button.selected {
+            background: var(--bg-secondary);
             border-color: currentColor;
-            background: currentColor;
-            transform: scale(1.05);
-        }
-
-        .mood-button.selected::before {
-            opacity: 0.2;
+            border-width: 2.5px;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px -2px currentColor;
         }
 
         .mood-button.happy {
@@ -187,31 +216,31 @@
 
         .mood-icon {
             font-size: 2.5rem;
-            position: relative;
-            z-index: 1;
-            transition: transform 0.3s ease;
+            transition: transform 0.2s ease;
+            filter: grayscale(0.3);
         }
 
         .mood-button:hover .mood-icon {
-            transform: scale(1.15);
+            transform: scale(1.1);
+            filter: grayscale(0);
         }
 
         .mood-button.selected .mood-icon {
-            transform: scale(1.2);
-            animation: bounce 0.5s ease;
+            transform: scale(1.15);
+            filter: grayscale(0);
+            animation: pop 0.4s ease;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: scale(1.2); }
-            50% { transform: scale(1.35); }
+        @keyframes pop {
+            0%, 100% { transform: scale(1.15); }
+            50% { transform: scale(1.25); }
         }
 
         .mood-text {
             font-weight: 600;
-            font-size: 1rem;
-            position: relative;
-            z-index: 1;
+            font-size: 0.9rem;
             color: var(--text-primary);
+            letter-spacing: -0.01em;
         }
 
         .comment-section {
@@ -219,116 +248,88 @@
             opacity: 0;
             max-height: 0;
             overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .comment-section.visible {
             opacity: 1;
-            max-height: 300px;
-            margin-bottom: 30px;
-            animation: slideDown 0.5s ease-out;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            max-height: 280px;
+            margin-bottom: 24px;
         }
 
         .comment-label {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
+            font-size: 0.875rem;
             font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
         }
 
         .comment-optional {
             font-size: 0.8rem;
             color: var(--text-secondary);
-            opacity: 0.6;
-            margin-left: 8px;
             font-weight: 400;
+            margin-left: 6px;
         }
 
         textarea {
             width: 100%;
-            background: rgba(255, 255, 255, 0.03);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 20px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
             color: var(--text-primary);
-            font-family: 'Spline Sans', sans-serif;
-            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
             resize: vertical;
-            min-height: 120px;
-            transition: all 0.3s ease;
+            min-height: 110px;
+            transition: all 0.2s ease;
+            line-height: 1.5;
         }
 
         textarea:focus {
             outline: none;
             border-color: var(--text-secondary);
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--bg-secondary);
+            box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.1);
         }
 
         textarea::placeholder {
             color: var(--text-secondary);
-            opacity: 0.5;
+            opacity: 0.6;
         }
 
         .submit-section {
             opacity: 0;
             max-height: 0;
             overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .submit-section.visible {
             opacity: 1;
-            max-height: 100px;
+            max-height: 80px;
         }
 
         .submit-button {
             width: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--text-primary);
             color: white;
             border: none;
-            border-radius: 16px;
-            padding: 20px;
-            font-size: 1.1rem;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .submit-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .submit-button:hover::before {
-            left: 100%;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.01em;
         }
 
         .submit-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
+            background: #1e293b;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
         }
 
         .submit-button:active {
@@ -336,49 +337,88 @@
         }
 
         .submit-button:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
 
         .success-message {
             position: fixed;
-            top: 30px;
-            right: 30px;
+            top: 24px;
+            right: 24px;
             background: var(--success);
-            color: var(--bg-primary);
-            padding: 20px 30px;
-            border-radius: 16px;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
             font-weight: 600;
-            box-shadow: 0 12px 24px rgba(74, 222, 128, 0.3);
+            font-size: 0.9rem;
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.3);
             transform: translateX(400px);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1000;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .success-message.show {
             transform: translateX(0);
         }
 
+        .success-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            font-size: 12px;
+        }
+
         @media (max-width: 600px) {
             .card {
-                padding: 40px 30px;
+                padding: 36px 28px;
+                border-radius: 20px;
             }
 
             h1 {
-                font-size: 2rem;
+                font-size: 1.75rem;
             }
 
             .mood-buttons {
-                gap: 12px;
+                gap: 10px;
             }
 
             .mood-button {
-                padding: 24px 16px;
+                padding: 24px 12px;
             }
 
             .mood-icon {
-                font-size: 2rem;
+                font-size: 2.25rem;
+            }
+
+            .mood-text {
+                font-size: 0.85rem;
+            }
+
+            .success-message {
+                top: 16px;
+                right: 16px;
+                left: 16px;
+                transform: translateY(-100px);
+            }
+
+            .success-message.show {
+                transform: translateY(0);
+            }
+        }
+
+        /* Smooth scrolling for mobile */
+        @media (max-height: 700px) {
+            body {
+                align-items: flex-start;
+                padding-top: 40px;
             }
         }
     </style>
@@ -429,7 +469,8 @@
     </div>
 
     <div class="success-message" id="successMessage">
-        ✓ Feedback submitted successfully!
+        <span class="success-icon">✓</span>
+        <span>Feedback submitted successfully!</span>
     </div>
 
     <script>
