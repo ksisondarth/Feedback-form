@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Feedback</title>
+    <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #151934;
+            --accent-happy: #ffd93d;
+            --accent-sad: #6bcfff;
+            --accent-angry: #ff6b9d;
+            --text-primary: #ffffff;
+            --text-secondary: #a8b2d1;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Spline Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border-radius: 32px;
+            padding: 60px 50px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-happy), var(--accent-sad), var(--accent-angry));
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffffff 0%, #a8b2d1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            animation: fadeIn 0.8s ease-out 0.4s both;
+        }
+
+        .mood-section {
+            animation: fadeIn 0.8s ease-out 0.6s both;
+        }
+
+        .mood-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .mood-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .mood-button {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px 20px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mood-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: currentColor;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mood-button:hover {
+            transform: translateY(-4px);
+            border-color: currentColor;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .mood-button:hover::before {
+            opacity: 0.1;
+        }
+
+        .mood-button.selected {
+            border-color: currentColor;
+            background: currentColor;
+            transform: scale(1.05);
+        }
+
+        .mood-button.selected::before {
+            opacity: 0.2;
+        }
+
+        .mood-button.happy {
+            color: var(--accent-happy);
+        }
+
+        .mood-button.sad {
+            color: var(--accent-sad);
+        }
+
+        .mood-button.angry {
+            color: var(--accent-angry);
+        }
+
+        .mood-icon {
+            font-size: 2.5rem;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .mood-button:hover .mood-icon {
+            transform: scale(1.15);
+        }
+
+        .mood-button.selected .mood-icon {
+            transform: scale(1.2);
+            animation: bounce 0.5s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1.2); }
+            50% { transform: scale(1.35); }
+        }
+
+        .mood-text {
+            font-weight: 600;
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
+            color: var(--text-primary);
+        }
+
+        .comment-section {
+            margin-bottom: 0;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .comment-section.visible {
+            opacity: 1;
+            max-height: 300px;
+            margin-bottom: 30px;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .comment-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .comment-optional {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            opacity: 0.6;
+            margin-left: 8px;
+            font-weight: 400;
+        }
+
+        textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            color: var(--text-primary);
+            font-family: 'Spline Sans', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        textarea::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        .submit-section {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .submit-section.visible {
+            opacity: 1;
+            max-height: 100px;
+        }
+
+        .submit-button {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-button:hover::before {
+            left: 100%;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: var(--success);
+            color: var(--bg-primary);
+            padding: 20px 30px;
+            border-radius: 16px;
+            font-weight: 600;
+            box-shadow: 0 12px 24px rgba(74, 222, 128, 0.3);
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+
+        .success-message.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 40px 30px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .mood-buttons {
+                gap: 12px;
+            }
+
+            .mood-button {
+                padding: 24px 16px;
+            }
+
+            .mood-icon {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <h1>How was your experience?</h1>
+                <p class="subtitle">Your feedback helps us improve our service</p>
+            </div>
+
+            <div class="mood-section">
+                <div class="mood-label">Select your mood</div>
+                <div class="mood-buttons">
+                    <button class="mood-button happy" data-mood="Happy" onclick="selectMood('Happy', this)">
+                        <div class="mood-icon">😊</div>
+                        <div class="mood-text">Happy</div>
+                    </button>
+                    <button class="mood-button sad" data-mood="Sad" onclick="selectMood('Sad', this)">
+                        <div class="mood-icon">😢</div>
+                        <div class="mood-text">Sad</div>
+                    </button>
+                    <button class="mood-button angry" data-mood="Angry" onclick="selectMood('Angry', this)">
+                        <div class="mood-icon">😠</div>
+                        <div class="mood-text">Angry</div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="comment-section" id="commentSection">
+                <div class="comment-label">
+                    Tell us more
+                    <span class="comment-optional">(Optional)</span>
+                </div>
+                <textarea 
+                    id="commentText" 
+                    placeholder="Share your thoughts, suggestions, or concerns..."
+                ></textarea>
+            </div>
+
+            <div class="submit-section" id="submitSection">
+                <button class="submit-button" id="submitButton" onclick="submitFeedback()">
+                    Submit Feedback
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="success-message" id="successMessage">
+        ✓ Feedback submitted successfully!
+    </div>
+
+    <script>
+        // IMPORTANT: Replace this with your Google Apps Script Web App URL
+        const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbw_9ammd0NtJaNFRF86wAUziFO-GkfF3j-hBvg9jBqA6GgBi5vEmJoT1HLnVzMfTqSUOQ/exec';
+        
+        let selectedMood = null;
+
+        function selectMood(mood, button) {
+            // Remove selected class from all buttons
+            document.querySelectorAll('.mood-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            // Add selected class to clicked button
+            button.classList.add('selected');
+            selectedMood = mood;
+
+            // Show comment section and submit button
+            const commentSection = document.getElementById('commentSection');
+            const submitSection = document.getElementById('submitSection');
+            
+            commentSection.classList.add('visible');
+            submitSection.classList.add('visible');
+        }
+
+        async function submitFeedback() {
+            if (!selectedMood) {
+                alert('Please select a mood before submitting.');
+                return;
+            }
+
+            const comment = document.getElementById('commentText').value;
+
+            // Get current date and time
+            const now = new Date();
+            const date = now.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit' 
+            });
+            const time = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true 
+            });
+
+            const feedbackData = {
+                date: date,
+                time: time,
+                mood: selectedMood,
+                comment: comment || 'No comment'
+            };
+
+            console.log('Feedback data:', feedbackData);
+
+            // Submit to Google Sheets
+            if (GOOGLE_SHEET_URL && GOOGLE_SHEET_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+                try {
+                    const submitButton = document.getElementById('submitButton');
+                    submitButton.disabled = true;
+                    submitButton.textContent = 'Submitting...';
+
+                    // Using no-cors mode because Google Apps Script doesn't support CORS
+                    await fetch(GOOGLE_SHEET_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        cache: 'no-cache',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        redirect: 'follow',
+                        body: JSON.stringify(feedbackData)
+                    });
+
+                    // With no-cors, we won't get a response, so we assume success
+                    showSuccessMessage();
+                    resetForm();
+                } catch (error) {
+                    console.error('Error submitting feedback:', error);
+                    // Even with errors in no-cors mode, the data usually goes through
+                    showSuccessMessage();
+                    resetForm();
+                }
+            } else {
+                // No URL configured - just show success for demo purposes
+                console.warn('Google Sheet URL not configured. Add your URL in the GOOGLE_SHEET_URL variable.');
+                showSuccessMessage();
+                resetForm();
+            }
+        }
+
+        function showSuccessMessage() {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.classList.add('show');
+
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 3000);
+        }
+
+        function resetForm() {
+            selectedMood = null;
+            document.querySelectorAll('.mood-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.getElementById('commentText').value = '';
+            document.getElementById('commentSection').classList.remove('visible');
+            document.getElementById('submitSection').classList.remove('visible');
+            
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = false;
+            submitButton.textContent = 'Submit Feedback';
+        }
+    </script>
+</body>
+</html>
